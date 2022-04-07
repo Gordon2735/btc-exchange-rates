@@ -1,9 +1,9 @@
-const express = require('express');
-const path = require('path');
-const axios = require('axios').default;
-const morgan = require('morgan');
-const NodeCache = require('node-cache');
-const format = require('date-fns/format');
+import express from 'express';
+import path from 'path';
+import axios from 'axios';
+import morgan from 'morgan';
+import NodeCache from 'node-cache';
+import { format } from 'date-fns';
 
 const appCache = new NodeCache();
 
@@ -25,7 +25,23 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, '..', 'views'));
 
-async function getExchangeRates() {
+type Currency = {
+  name: string;
+  unit: string;
+  value: number;
+  type: string;
+};
+
+type Rates = {
+  rates: Record<string, Currency>;
+};
+
+type ExchangeRateResult = {
+  timestamp: Date;
+  exchangeRates: Rates;
+};
+
+async function getExchangeRates(): Promise<Rates> {
   const response = await axios.get(
     'https://api.coingecko.com/api/v3/exchange_rates',
     {
@@ -38,7 +54,7 @@ async function getExchangeRates() {
   return response.data;
 }
 
-async function refreshExchangeRates() {
+async function refreshExchangeRates(): Promise<ExchangeRateResult> {
   const rates = await getExchangeRates();
   const result = {
     timestamp: new Date(),
@@ -63,9 +79,9 @@ appCache.on('expired', async (key) => {
 
 app.get('/', async (req, res, next) => {
   try {
-    let data = appCache.get('exchangeRates');
+    let data: ExchangeRateResult | undefined = appCache.get('exchangeRates');
 
-    if (data == null) {
+    if (data === undefined) {
       data = await refreshExchangeRates();
     }
 
