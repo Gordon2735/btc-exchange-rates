@@ -6,19 +6,39 @@
   "keywords": [],
   "author": "Better Stack Team",
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon",
+    "start": "nodemon dist/src/server.js",
+    "lint": "eslint . --fix",
+    "pretty": "npx prettier --write src/server.ts",
+    "cli": "npx prettier --write src/server.ts && eslint . --fix"
   },
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
     "date-fns": "^2.28.0",
     "express": "^4.17.1",
+    "gitignore": "^0.7.0",
     "morgan": "^1.10.0",
+    "node": "^19.2.0",
     "node-cache": "^5.1.2",
     "nodemon": "^2.0.15",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "serve-favicon": "^2.5.0",
+    "typescript": "^4.9.3"
   },
   "devDependencies": {
-    "open": "^8.4.0"
+    "@tsconfig/node16": "^1.0.3",
+    "@types/express": "^4.17.14",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^18.11.11",
+    "@types/serve-favicon": "^2.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.45.1",
+    "@typescript-eslint/parser": "^5.45.1",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "open": "^8.4.0",
+    "prettier": "^2.8.0",
+    "ts-node": "^10.9.1"
   }
 }
