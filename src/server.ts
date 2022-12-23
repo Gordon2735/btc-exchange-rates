@@ -1,3 +1,5 @@
+'use strict';
+
 import express, { Application, Request, Response, NextFunction } from 'express';
 import path, { PlatformPath } from 'path';
 import axios, { AxiosResponse } from 'axios';
@@ -8,14 +10,11 @@ import open from 'open';
 import { Server } from 'node:http';
 import favicon from 'serve-favicon';
 
-const appCache = new NodeCache();
-
+const appCache: NodeCache = new NodeCache();
 const app: Application = express();
-
 const paths: PlatformPath = path;
 
 app.use(morgan('dev'));
-
 const morganMiddleware = morgan(
   ':method :url :status :res[content-length] - :response-time ms',
   {
@@ -24,14 +23,13 @@ const morganMiddleware = morgan(
     },
   }
 );
-
 app.use(morganMiddleware);
-
-// app.use(express.static(paths.join(__dirname, '..', 'public')));
 
 app.set('view engine', 'pug');
 app.set('./views', paths.join(__dirname, '..', 'views'));
+app.set('./css', paths.join(__dirname, '..', ':root', 'index.css'));
 app.use(favicon(__dirname + '/images/favicon.ico'));
+app.use(express.static(paths.join(__dirname, '..', 'src')));
 
 type Currency = {
   name: string;
@@ -58,7 +56,6 @@ async function getExchangeRates() {
       },
     }
   );
-
   return response.data;
 }
 
@@ -80,8 +77,8 @@ appCache.on('expired', async (key) => {
     if (key === 'exchangeRates') {
       await refreshExchangeRates();
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error: unknown) {
+    console.error(error);
   }
 });
 
@@ -98,8 +95,8 @@ app.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
       lastUpdated: format(data.timestamp, 'LLL dd, yyyy hh:mm:ss a O'),
       data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error: unknown) {
+    console.error(error);
     res.set('Content-Type', 'text/html');
     res.status(500).send('<h1>Internal Server Error</h1>');
   }
@@ -108,9 +105,10 @@ app.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
 
 const PORT: string | 3000 = process.env.PORT || 3000;
 const HOST: string = process.env.HOST || '127.0.0.01';
+
 const server: Server = app.listen(PORT, async () => {
   server;
-  console.log(`server started on host: ${HOST} & port: ${PORT}`);
+  console.log(`server started on host: ${HOST} @ port: ${PORT}`);
 
   try {
     await refreshExchangeRates();

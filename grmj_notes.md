@@ -17,6 +17,12 @@
     - npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
     - npm install --save-dev prettier
     - npm install --save-dev eslint-config-prettier eslint-plugin-prettier
+    - npm i serve-favicon
+    - npm install -g typed-css-modules
+
+    - tcm src
+    - tcm -o dist src
+    - tcm -w -l 'src/images/**/*.png'
 
 <br/>
 

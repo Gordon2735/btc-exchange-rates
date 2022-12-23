@@ -102,5 +102,5 @@
   },
   "extends": "@tsconfig/node16/tsconfig.json",
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "views"]
+  "exclude": ["node_modules", "views", ":root"]
 }
